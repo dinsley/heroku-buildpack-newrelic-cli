@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+set -euo pipefail
+
+BUILD_DIR=$1
+
+CLI_VERSION='0.65.7'
+CLI_MACHINE='x86_64'
+CLI_OS='Linux'
+CLI_RELEASE_URL="https://download.newrelic.com/install/newrelic-cli/v${VERSION}/newrelic-cli_${VERSION}_${OS}_${MACHINE}.tar.gz"
+
+echo "-----> Downloading Newrelic CLI (v${CLI_VERSION}})"
+wget -q $CLI_RELEASE_URL -O newrelic-cli.tar.gz
+
+echo "-----> Unpacking Newrelic CLI"
+mkdir -p $BUILD_DIR/.newrelic-cli
+tar -xzf newrelic-cli.tar.gz -C $BUILD_DIR/.newrelic-cli/
+rm $BUILD_DIR/.newrelic-cli/
+
+echo "-----> Adding Newrelic CLI to PATH"
+PROFILE_FILE="$BUILD_DIR/.profile.d/newrelic-cli.sh"
+mkdir -p $(dirname $PROFILE_FILE)
+echo 'export PATH="/app/.newrelic-cli:$PATH"' > $PROFILE_FILE
+
+echo "-----> Newrelic CLI installed"
